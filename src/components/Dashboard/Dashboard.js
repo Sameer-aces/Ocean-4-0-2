@@ -5,6 +5,7 @@ import { GlobalContext } from "../../GlobalProvider";
 import Footer from "../Sheet/Footer";
 import Header from "../Headers/Header";
 import Filter from "../Sheet/Filter";
+import Scrollbars from "react-custom-scrollbars-2";
 //Second commit
 const Dashboard = () => {
   const dragItem = useRef();
@@ -67,7 +68,7 @@ const Dashboard = () => {
       <Header />
       <div
         className="Dashboard"
-        style={{ border: "5px solid blue", height: "88vh" }}
+        style={{ border: "5px solid black", height: "88vh" }}
       >
         <div className="Sheets">
           <Filter />
@@ -98,6 +99,7 @@ const Dashboard = () => {
                 margin: "3px",
                 background: "#5d6d7e",
                 color: "white",
+                fontSize: "13px",
               }}
               draggable
               onDragStart={() => (dragItem.current = sheet)}
@@ -106,7 +108,6 @@ const Dashboard = () => {
             </p>
           ))}
         </div>
-
         <div
           className="AllSheets"
           id="myDIV"
@@ -125,11 +126,13 @@ const Dashboard = () => {
                 className="graphDrop"
                 style={{
                   border: "1px solid black",
-                  width: "450px",
+                  // width: "444px",
                   height: "323px",
+                  overflow: "auto",
                 }}
               >
                 <Plot
+                  style={{ overflow: "auto" }}
                   data={[
                     sheet.graph === "pie"
                       ? {
@@ -326,10 +329,10 @@ const Dashboard = () => {
                         },
                   ]}
                   layout={{
-                    // autosize: false,
+                    // autosize: true,
                     xaxis: { title: { text: sheet?.col?.key } },
                     yaxis: { title: { text: sheet?.row?.key } },
-                    width: 446,
+                    // width: 440,
                     height: 302,
                     fontSize: 2,
                     mapbox: { style: "open-street-map" },

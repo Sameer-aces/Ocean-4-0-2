@@ -7,7 +7,10 @@ import ImportExcel from "../Sheet/ImportExcel";
 const Header = () => {
   const sheetParam = useParams().sheet;
   const dashboardParam = useParams().dashboard;
+  const storyParam = useParams().story;
+
   const {
+    storys,
     dashboards,
     sheets,
     selectedWB,
@@ -24,15 +27,18 @@ const Header = () => {
     if (e.target.value === "open") {
     }
     if (e.target.value === "Save") {
+      console.log("starting here");
       let obj = {};
       let allSheetsData = selectedWB;
       obj["sheetParam"] = sheetParam;
       obj["dashboardParam"] = dashboardParam;
+      obj["storyParam"] = storyParam;
       // obj["columns"] = columns;
       obj["allworksheetData"] = allSheetsData;
       obj["globalData"] = sheets;
       obj["dashboards"] = dashboards;
       obj["realdata"] = selectedWB[selectedWBSheet];
+      obj["storys"] = storys;
       let content = JSON.stringify(obj);
       let blob = new Blob([content], { type: "application/json" });
 

@@ -24,6 +24,7 @@ function getDataRange(data) {
 const ImportExcel = (props) => {
   const [switchSheet, setswitchSheet] = useState(1);
   const [switchDashboard, setswitchDashboard] = useState(1);
+  const [switchStory, setswitchStory] = useState(1);
   const [addedFile, setAddedFile] = useState(false);
   const [work, setworksheet] = useState();
   const [datas, setalldata] = useState([]);
@@ -44,6 +45,7 @@ const ImportExcel = (props) => {
     setallUnique,
     setDataFormat,
     setDataType,
+    setStorys,
     loading,
     setLoading,
     setBufferingModal,
@@ -146,10 +148,11 @@ const ImportExcel = (props) => {
   };
 
   const processAgainFile = (jsondata, worksheet) => {
-    setBufferingModal(true);
-    setLoading(true);
+    setBufferingModal(false);
+    setLoading(false);
     let sheet = jsondata.sheetParam;
     let dashboard = jsondata.dashboardParam;
+    let story = jsondata.storyParam;
     if (sheet) {
       let totalSheetSize = sheet.length;
       let numberToSwitch = sheet.substring(totalSheetSize);
@@ -162,9 +165,16 @@ const ImportExcel = (props) => {
       if (dashboard === undefined) setswitchDashboard(1);
       setswitchDashboard(Number(numberToSwitchDashboard));
     }
+    if (story) {
+      let totalStorySize = story.length;
+      let numberToSwitchStory = story.substring(totalStorySize);
+      if (story === undefined) setswitchStory(1);
+      setswitchStory(Number(numberToSwitchStory));
+    }
     // setColumns(jsondata.columns);
     setSheets(jsondata.globalData);
     setDashboards(jsondata.dashboards);
+    setStorys(jsondata.storys);
     setSelectedWB(jsondata.allSheetsData);
     setAddedFile(true);
   };
