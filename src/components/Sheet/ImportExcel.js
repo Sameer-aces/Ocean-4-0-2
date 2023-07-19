@@ -214,6 +214,7 @@ const ImportExcel = (props) => {
         let text = event.target.result;
         const PARSEDTEXT = JSON.parse(text);
         processAgainFile(PARSEDTEXT);
+        console.log("first");
       };
       reader.readAsText(e.target.files[0]);
     } else {
