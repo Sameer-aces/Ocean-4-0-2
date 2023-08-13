@@ -465,6 +465,28 @@ tr {
   border-radius: 10px;
   padding: 10px;
 }
+.sqlmodalStyle {
+  background-color: #ffffff;
+  width: 450px;
+  height: 480px;
+  position: relative;
+  top: 50%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  margin-right: 50%;
+  transform: translate(-50%, -50%);
+  border: 1px solid black;
+  border-radius: 10px;
+  padding: 10px;
+}
+.sqlconnectFormStyle {
+  display: block;
+  justify-content: center;
+  align-content: center;
+  margin: 30px;
+  padding: 10px;
+}
 .modalInput {
   border: 1px solid black;
   border-radius: 8px;

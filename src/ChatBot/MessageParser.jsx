@@ -13,11 +13,9 @@ const MessageParser = ({ children, actions }) => {
     browserSupportsSpeechRecognition,
   } = useSpeechRecognition();
   const parse = (message) => {
-    console.log(transcript, message);
 
     const lowercase = message.toLowerCase();
     if (lowercase.includes("hello")) {
-      console.log(lowercase, "test");
       actions.handleHello();
     }
     if (lowercase.includes("plot" || "graph" || "gra")) {

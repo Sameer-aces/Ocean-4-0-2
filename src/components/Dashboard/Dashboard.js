@@ -34,16 +34,6 @@ const Dashboard = () => {
       dashboard.name === dashboardParam ? updatedDashboard : dashboard
     );
     setDashboards(tempDashboards);
-    // console.log(
-    //   sheets.map((x) => {
-    //     if (x.name === "sheet3") {
-    //       console.log("yes there");
-    //       dragItem.current = x;
-    //       updatedDashboard.graphs[4] = x;
-    //       console.log(dragItem.current, x);
-    //     }
-    //   })
-    // );
   };
   function mobileView() {
     document.getElementById("myDIV").style.width = "470px";
@@ -344,6 +334,7 @@ const Dashboard = () => {
                       showlakes: true,
                       lakecolor: "rgb(255,255,255)",
                     },
+                    
                   }}
                 />
               </div>

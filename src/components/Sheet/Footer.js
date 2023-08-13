@@ -21,7 +21,6 @@ const Footer = () => {
     setDisableComponent,
   } = useContext(GlobalContext);
   const handleAddSheet = () => {
-    console.log("handleAddSheet");
     const newSheet = { name: `sheet${sheets.length}`, workbooks: [], rows: [] };
     setSheets((prev) => [...prev, newSheet]);
   };
@@ -95,7 +94,6 @@ const Footer = () => {
         </button>
         {dashboards.map(
           (dashboard, idx) => (
-            console.log(dashboards),
             (
               <button key={idx}>
                 <Link to={`/dashboard/${dashboard.name}`}>

@@ -38,7 +38,6 @@ const GetMonth = (props) => {
     for (var i = 0; i < plotValue.length; i++) {
       const date = new Date(plotValue[i]);
       const month = date.toLocaleString("default", { month: "long" });
-      console.log(month);
       newFieldArray.push(month);
     }
 

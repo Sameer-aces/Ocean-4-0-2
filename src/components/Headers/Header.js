@@ -3,6 +3,7 @@ import { GlobalContext } from "../../GlobalProvider";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import { saveAs } from "file-saver";
 import ImportExcel from "../Sheet/ImportExcel";
+import Sconnect from "../Sheet/Sconnect";
 
 const Header = () => {
   const sheetParam = useParams().sheet;
@@ -18,6 +19,8 @@ const Header = () => {
     matchedUser,
     disableComponenet,
     setDisableComponent,
+    modalIsOpens,
+    setIsOpensql,
   } = useContext(GlobalContext);
   let navigate = useNavigate();
   function fileInput(e) {
@@ -26,8 +29,11 @@ const Header = () => {
     }
     if (e.target.value === "open") {
     }
+    if (e.target.value === "connectsql") {
+      setIsOpensql(true);
+      return <Sconnect />;
+    }
     if (e.target.value === "Save") {
-      console.log("starting here");
       let obj = {};
       let allSheetsData = selectedWB;
       obj["sheetParam"] = sheetParam;
@@ -58,10 +64,13 @@ const Header = () => {
   });
   return (
     <>
+      <Sconnect />
       <div className="First-line">
         <select onClick={fileInput}>
           <option type="file">Files</option>
           <option value="open">Open</option>
+          <option value="connectsql">Connect SQL</option>
+
           <option>Save</option>
           <option>Exit</option>
         </select>

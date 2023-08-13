@@ -6,11 +6,25 @@ import ImportExcel from "../Sheet/ImportExcel";
 import { pickBy, keys, max, isEmpty } from "lodash";
 import "../../App.css";
 import { Scrollbars } from "react-custom-scrollbars-2";
+import axios from "axios";
 
 const Datasource = () => {
   const dragItem = useRef();
-  const { selectedWBSheet, selectedWB, setSelectedWB, setSelectedWBSheet } =
-    useContext(GlobalContext);
+  const {
+    selectedWBSheet,
+    selectedWB,
+    setSelectedWB,
+    setSelectedWBSheet,
+    dbname,
+    setdbNames,
+    serverDetails,
+    sheets,
+    dbTableNames,
+    setSheets,
+    setdbTableNames,
+    databaseNames,
+    setdatabaseName,
+  } = useContext(GlobalContext);
   const [sheet1, setSheet1] = useState();
   const [sheet2, setSheet2] = useState();
   const [interSection, setInterSection] = useState();
@@ -86,6 +100,83 @@ const Datasource = () => {
     }
   };
 
+  const handleConnectivity = (e) => {
+    const databaseName = {
+      connectivity: serverDetails,
+      databaseName: e.target.value,
+    };
+    setdatabaseName(e.target.value);
+    axios
+      .post(
+        // "http://localhost:5001/api/users/database",
+        "https://ocean-user-serverbackend.onrender.com/api/users/database",
+        databaseName
+      )
+      .then((res) => {
+        const t = res.data;
+        const col = Object.keys(t);
+        const yo = [];
+        const x = res.data.map((pop) => {
+          const y = Object.values(pop);
+          yo.push(y);
+        });
+        // setdbNames(yo);
+        setdbTableNames(yo);
+      })
+      .catch((res) => {
+        console.log(res);
+      });
+  };
+  const handleTableConnectivity = (e) => {
+    const dbandTable = {
+      connectivity: serverDetails,
+      databaseName: databaseNames,
+      databaseTableName: e.target.value,
+    };
+    axios
+      .post(
+        // "http://localhost:5001/api/users/databaseTable",
+        "https://ocean-user-serverbackend.onrender.com/api/users/databaseTable",
+        dbandTable
+      )
+      .then((res) => {
+        const t = res.data[0];
+        const col = Object.keys(t);
+        const yo = [col];
+        const x = res.data.map((pop) => {
+          const y = Object.values(pop);
+          yo.push(y);
+        });
+        const mySheetData = yo;
+        const realData = res.data;
+        const tempSheets = sheets.map((sheet) =>
+          sheet.name === "sheet"
+            ? {
+                ...sheet,
+                workbooks: [
+                  ...sheet.workbooks,
+                  {
+                    fileName: e.target.value,
+                    workbook: {
+                      Sheet1: yo,
+                    },
+                  },
+                ],
+                realData: realData,
+              }
+            : sheet
+        );
+        const obj = {
+          Sheet1: yo,
+        };
+        setSheets(tempSheets);
+        setSelectedWB(obj);
+        setSelectedWBSheet("Sheet1");
+      })
+      .catch((res) => {
+        console.log(res);
+      });
+  };
   return (
     <>
       <Header />
@@ -94,8 +185,32 @@ const Datasource = () => {
           <p>Sheets</p>
           <hr></hr>
           <ImportExcel />
-
           <hr />
+          <select
+            id="schema"
+            style={{ display: "block" }}
+            onChange={handleConnectivity}
+          >
+            {!isEmpty(dbname) &&
+              dbname.map((database) => (
+                <option key={database} value={database}>
+                  {database}
+                </option>
+              ))}
+          </select>
+          <select
+            id="schema"
+            style={{ display: "block" }}
+            onChange={handleTableConnectivity}
+          >
+            {!isEmpty(dbTableNames) &&
+              dbTableNames.map((database) => (
+                <option key={database} value={database}>
+                  {database}
+                </option>
+              ))}
+          </select>
+          {/* {dbname.map((x) => x)} */}
           {!isEmpty(selectedWB) && (
             <div className="fileName" style={{ display: "block" }}>
               {Object.keys(selectedWB).map((sheet, idx) => (

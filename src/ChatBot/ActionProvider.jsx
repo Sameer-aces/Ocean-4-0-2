@@ -198,7 +198,6 @@ const ActionProvider = ({
     setIsOpenFilter(true);
     setFilterOperator(">");
     setFilterValue(2000000);
-    console.log("from chat");
     let str = selectedSheet?.row?.values.map((d) => (
       <option className="filterOptions" value={d}>
         {d}

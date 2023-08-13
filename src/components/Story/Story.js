@@ -28,9 +28,7 @@ const Story = () => {
 
   const handleDrop = (index) => {
     const dragSheet = dragItem.current;
-    console.log(dragItem, dragSheet);
     const updatedStory = storys.find((story) => story.name === storyParam);
-    console.log(updatedStory);
     updatedStory.buttonContain[index] = dragSheet;
     const tempStorys = storys.map((story) =>
       story.name === storyParam ? updatedStory : story
@@ -40,14 +38,12 @@ const Story = () => {
   };
   function handleAddContainer() {
     const updatedStory = storys.find((story) => story.name === storyParam);
-    console.log(updatedStory);
     updatedStory.buttonContain.push(updatedStory.buttonContain.length);
     const tempStorys = storys.map((story) =>
       story.name === storyParam ? updatedStory : story
     );
     setStorys(tempStorys);
   }
-  console.log(selected, selectedStory?.buttonContain);
   useEffect(() => {
     setSelectedStory(storys.find((s) => s.name === storyParam));
   }, [storyParam, selectedStory]);

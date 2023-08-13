@@ -123,9 +123,7 @@ const AlanTalk = (props) => {
     // const column = columnValue[0].toUpperCase() + columnValue.slice(1);
     const p = selectedWB[selectedWBSheet][0].map((c) => c.toLowerCase());
     const z = p.findIndex((element) => element === columnValue.toLowerCase());
-    console.log(p, z, columnValue);
     const column = columns[z];
-    console.log(column);
     if (columns.includes(column)) {
       alanInstance.playText(`Selecting column value as ${columnValue}`);
       const plotValue = processCsv(selectedWB[selectedWBSheet]).map(
@@ -138,7 +136,6 @@ const AlanTalk = (props) => {
       );
       setSheets(tempSheets);
     } else {
-      console.log(true);
       alanInstance.playText(`${columnValue} does not exist`);
     }
   };
@@ -171,7 +168,6 @@ const AlanTalk = (props) => {
   const navigates = ({ detail: { navigateTo } }) => {
     alanInstance.playText(`${navigateTo}`);
     const options = navigateTo.toLowerCase(navigateTo);
-    console.log(options);
     switch (options) {
       case "sheet":
         navigate("/sheet/sheet", { replace: "true" });
@@ -194,17 +190,14 @@ const AlanTalk = (props) => {
     }
   };
   const navigatesheet = ({ detail: { value } }) => {
-    console.log(`sheet`.concat(value));
     alanInstance.playText(`sheet`.concat(value));
     navigate(`/sheet/sheet`.concat(value), { replace: true });
   };
   const navigateDashboard = ({ detail: { value } }) => {
-    console.log(`sheet`.concat(value));
     alanInstance.playText(`Dashboard`.concat(value));
     navigate(`/dashboard/dashboard`.concat(value), { replace: true });
   };
   const navigateStory = ({ detail: { value } }) => {
-    console.log(`sheet`.concat(value));
     alanInstance.playText(`Story`.concat(value));
     navigate(`/story/story`.concat(value), { replace: true });
   };
@@ -236,7 +229,6 @@ const AlanTalk = (props) => {
     {
       dashboards.map(
         (dashboard, idx) => (
-          console.log(dashboards),
           (
             <button key={idx}>
               <Link to={`/dashboard/${dashboard.name}`}>{dashboard.name}</Link>
@@ -257,7 +249,6 @@ const AlanTalk = (props) => {
     {
       dashboards.map(
         (dashboard, idx) => (
-          console.log(dashboards),
           (
             <button key={idx}>
               <Link to={`/dashboard/${dashboard.name}`}>{dashboard.name}</Link>
@@ -272,7 +263,6 @@ const AlanTalk = (props) => {
       (dashboard) => dashboard.name === dashboardParam
     );
     const sheet = initialSheet;
-    console.log(sheet);
     if (initialSheet === "sheet") {
       sheets.map((x) => {
         if (x.name === sheet) {
@@ -287,10 +277,8 @@ const AlanTalk = (props) => {
       });
     } else {
       const updatedStory = storys.find((story) => story.name === storyParam);
-      console.log(updatedStory);
       dashboards.map((x) => {
         if (x.name === sheet) {
-          console.log(x);
           alanInstance.playText("dropping dashboard in story");
           dragItem.current = x;
           updatedStory.buttonContain[graphNumber] = x;
@@ -309,7 +297,6 @@ const AlanTalk = (props) => {
       (dashboard) => dashboard.name === dashboardParam
     );
     const sheet = "sheet".concat(sheetName);
-    console.log(sheet);
     sheets.map((x) => {
       if (x.name === sheet) {
         alanInstance.playText("dropping sheet");
@@ -324,7 +311,6 @@ const AlanTalk = (props) => {
   };
   const handleAddContainer = () => {
     const updatedStory = storys.find((story) => story.name === storyParam);
-    console.log(updatedStory);
     updatedStory.buttonContain.push(updatedStory.buttonContain.length);
     const tempStorys = storys.map((story) =>
       story.name === storyParam ? updatedStory : story
@@ -334,7 +320,6 @@ const AlanTalk = (props) => {
 
   const dropSheetContainer = ({ detail: { sheetName, containerNumber } }) => {
     const updatedStory = storys.find((story) => story.name === storyParam);
-    console.log(updatedStory);
     const sheet = "sheet".concat(sheetName);
     sheets.map((x) => {
       if (x.name === sheet) {
@@ -354,11 +339,9 @@ const AlanTalk = (props) => {
     detail: { sheetName, containerNumber },
   }) => {
     const updatedStory = storys.find((story) => story.name === storyParam);
-    console.log(updatedStory);
     const sheet = "dashboard".concat(sheetName);
     dashboards.map((x) => {
       if (x.name === sheet) {
-        console.log(x);
         alanInstance.playText("dropping dashboard in story");
         dragItem.current = x;
         updatedStory.buttonContain[containerNumber] = x;

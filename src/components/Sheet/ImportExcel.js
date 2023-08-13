@@ -46,10 +46,11 @@ const ImportExcel = (props) => {
     setDataFormat,
     setDataType,
     setStorys,
-    loading,
+    selectedWB,
     setLoading,
     setBufferingModal,
     fileName,
+    selectedWBSheet,
     setFileName,
   } = useContext(GlobalContext);
 
@@ -124,7 +125,6 @@ const ImportExcel = (props) => {
       mySheetData[sheetName] = jsonData;
       /* This is to get number of null values*/
       for (const cell in worksheet) {
-        // console.log(cell);
         if (cell[0] === "!") continue;
         const value = worksheet[cell].v;
         if (value === null) {
@@ -181,7 +181,6 @@ const ImportExcel = (props) => {
   const sendFileToBackend = (file) => {
     const formData = new FormData();
     formData.append("file", file);
-
     axios
       .post(
         "https://python-api-productionserver.onrender.com/api/uploadfile",
@@ -214,7 +213,6 @@ const ImportExcel = (props) => {
         let text = event.target.result;
         const PARSEDTEXT = JSON.parse(text);
         processAgainFile(PARSEDTEXT);
-        console.log("first");
       };
       reader.readAsText(e.target.files[0]);
     } else {
@@ -279,6 +277,7 @@ const ImportExcel = (props) => {
     const wb = selectedSheet.workbooks.find(
       (wb) => wb.fileName === event.target.value
     );
+
     setSelectedWB(wb.workbook);
     setSelectedWBSheet(Object.keys(wb.workbook)[0]);
   };

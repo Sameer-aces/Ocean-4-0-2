@@ -36,15 +36,12 @@ function Filter() {
 
   function openModal(e) {
     setIsOpenFilter(true);
-    console.log(e.target.value);
     setFilterType(e.target.value);
-    console.log("from chat");
     let str = selectedSheet?.row?.values.map((d) => (
       <option className="filterOptions" value={d}>
         {d}
       </option>
     ));
-    console.log(str);
     setSelectValue(str);
   }
   function afterOpenModal() {
@@ -57,7 +54,6 @@ function Filter() {
     setIsOpenFilter(false);
   }
   function filterOperators(e) {
-    console.log("operator filter");
     setFilterOperator(e.target.value);
     if (e.target.value === "select") {
       setFilterOperator(null);
@@ -66,10 +62,8 @@ function Filter() {
     }
   }
   const filterCheck = (e) => {
-    console.log("here");
     setFilterValue(e.target.value);
   };
-  console.log(filterType, filterOperator, filterValue, "filter");
   return (
     <div>
       <select onClick={openModal}>

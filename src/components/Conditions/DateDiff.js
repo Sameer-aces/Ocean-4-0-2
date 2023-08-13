@@ -51,7 +51,6 @@ const DateDiff = (props) => {
   var endDate = moment(value);
   const handleDates = (event) => {
     var dateList = getDaysBetweenDates(startDate, endDate);
-    console.log(dateList);
     const addingField = selectedWB[selectedWBSheet][0].push(newfield);
     const field = event.currentTarget.id;
     const plotValue = processCsv(selectedWB[selectedWBSheet]).map(

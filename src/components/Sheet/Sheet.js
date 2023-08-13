@@ -21,7 +21,8 @@ import Crosstable from "./Crosstable";
 import ClipLoader from "react-spinners/ClipLoader";
 import Bufferingwindow from "./Bufferingwindow";
 import AlanTalk from "./AlanTalk";
-
+import Insights from "./Insights";
+import Sconnect from "./Sconnect";
 const Sheet = () => {
   const [sheetParams, setSheetParam] = useState();
   const [scopemap, setScopeMap] = useState();
@@ -103,7 +104,6 @@ const Sheet = () => {
   };
   //Graph Selection
   const selectGraph = (event, name) => {
-    console.log(name, event);
     const tempSheets = sheets.map((s) =>
       s.name === sheetParam
         ? {
@@ -160,7 +160,6 @@ const Sheet = () => {
   function parseWithNaN(jsonString) {
     return JSON.parse(jsonString.replace(/NaN/g, "null"));
   }
-
   // ========================  table calculation API  ============================
   const fetchTableData = () => {
     if (selectedSheet?.graph === "Crosstab") {
@@ -173,8 +172,6 @@ const Sheet = () => {
         .then((res) => {
           const data = parseWithNaN(res.data);
           setTableData(data);
-          console.log("Parsed data:", data);
-          console.log(res.data);
         })
         .catch((err) => {
           console.log(err);
@@ -365,7 +362,6 @@ const Sheet = () => {
             />
           </div>
           {/* extra row values here*/}
-          <br></br>
           <hr style={{ width: "100%", background: "blue" }}></hr>
           <div
             droppable
@@ -381,6 +377,7 @@ const Sheet = () => {
               style={{ cursor: "pointer" }}
             />
           </div>
+          <hr style={{ width: "100%", background: "blue" }}></hr>
           <br></br>
           <select className="selectGraph" onChange={selectGraph} id="graph">
             <option value="">Graph</option>
@@ -402,410 +399,380 @@ const Sheet = () => {
             className="sheetName"
             onChange={(e) => setSheetParam(e.target.value)}
           />
-          <div
-            id="wordCloud"
+          {/* <div
             style={{
-              width: "540px",
-              height: "360px",
-              display: "none",
-              border: " 1px solid black",
-              fontColor: "10px",
+              marginRight: "100px",
             }}
           >
-            <button
-              onClick={wordCloud}
-              style={{
-                width: "70px",
-                height: "30px",
-                borderRadius: "20px",
-                cursor: "pointer",
-              }}
-            >
-              x
-            </button>
+            <Insights />
+          </div> */}
 
-            {/* <ReactWordcloud words={words} /> */}
-          </div>
-          <Scrollbars style={{ overflow: "hidden", height: "440px" }}>
-            <div
-              id="plots"
-              // style={{
-              //   overflowY: "auto",
-              //   width: "200%",
-              //   border: "1px solid black",
-              // }}
-            >
-              {/* <h1>here</h1> */}
+          <div
+            id="plots"
+            // style={{
+            //   overflowY: "auto",
+            //   width: "200%",
+            //   border: "1px solid black",
+            // }}
+          >
+            {/* <h1>here</h1> */}
 
-              {tableData &&
-                tableData.headings &&
-                tableData.side_headings &&
-                tableData.text_values &&
-                getCurrentGraphType() === "Crosstab" && (
-                  <Crosstable
-                    headings={tableData.headings}
-                    sideHeadings={tableData.side_headings}
-                    textValues={tableData.text_values.map((row) =>
-                      row.map((value) =>
-                        value === null ? "-" : value.toFixed(2)
-                      )
-                    )}
-                  />
-                )}
-              {selectedSheet?.graph && getCurrentGraphType() !== "Crosstab" && (
-                <Plot
-                  style={{
-                    overflow: "auto",
-                    width: "860px",
-                    height: "430px",
-                  }}
-                  data={[
-                    selectedSheet.graph === "pie"
-                      ? {
-                          type: selectedSheet?.graph,
-                          values: selectedSheet?.row?.values,
-                          labels: selectedSheet?.col?.values,
-                        }
-                      : selectedSheet.graph === "donut"
-                      ? {
-                          type: "pie",
-                          values: selectedSheet?.row?.values,
-                          labels: selectedSheet?.col?.values,
-                          hole: 0.4,
-                        }
-                      : selectedSheet.graph === "box"
-                      ? {
-                          type: selectedSheet?.graph,
-                          x: selectedSheet?.col?.values,
-                          y: selectedSheet?.row?.values,
-                          transforms: [
-                            {
-                              type: "groupby",
-                              groups: selectedSheet?.groupby?.values,
-                            },
-                            {
-                              type: filterType,
-                              target: "y",
-                              operation: filterOperator,
-                              value: filterValue,
-                            },
-                          ],
-                        }
-                      : selectedSheet.graph === "funnel"
-                      ? {
-                          type: selectedSheet?.graph,
-                          y: selectedSheet?.col?.values,
-                          x: selectedSheet?.row?.values,
-                          hoverinfo: "x+percent previous+percent initial",
-                          transforms: [
-                            {
-                              type: "aggregate",
-                              aggregations: [
-                                {
-                                  target: "x",
-                                  func: "sum",
-                                },
-                              ],
-                            },
-                            {
-                              type: "groupby",
-                              groups: selectedSheet?.groupby?.values,
-                            },
-                            {
-                              type: "sort",
-                              target: selectedSheet?.row?.values,
-                              order: "descending",
-                            },
-                          ],
-                        }
-                      : selectedSheet.graph === "scatter"
-                      ? {
-                          type: selectedSheet?.graph,
-                          x: selectedSheet?.col?.values,
-                          y: selectedSheet?.row?.values,
-                          mode: "markers", //only for the mode scatter has to be written in a diffrent object.
-                          transforms: [
-                            {
-                              type: "aggregate",
-                              aggregations: [
-                                {
-                                  target: "y",
-                                  func: "sum",
-                                },
-                              ],
-                            },
-                            {
-                              type: filterType,
-                              target: "y",
-                              operation: filterOperator,
-                              value: filterValue,
-                            },
-
-                            {
-                              type: "groupby",
-                              groups: selectedSheet?.groupby?.values,
-                            },
-                          ],
-                        }
-                      : selectedSheet.graph === "table"
-                      ? {
-                          type: selectedSheet?.graph,
-                          columnorder: [1, 9],
-                          columnwidth: [40, 40],
-                          header: {
-                            values: [
-                              selectedSheet?.col?.key,
-                              selectedSheet?.row?.key,
+            {tableData &&
+              tableData.headings &&
+              tableData.side_headings &&
+              tableData.text_values &&
+              getCurrentGraphType() === "Crosstab" && (
+                <Crosstable
+                  headings={tableData.headings}
+                  sideHeadings={tableData.side_headings}
+                  textValues={tableData.text_values.map((row) =>
+                    row.map((value) =>
+                      value === null ? "-" : value.toFixed(2)
+                    )
+                  )}
+                />
+              )}
+            {selectedSheet?.graph && getCurrentGraphType() !== "Crosstab" && (
+              <Plot
+                style={{
+                  overflow: "auto",
+                  width: "860px",
+                  height: "430px",
+                }}
+                data={[
+                  selectedSheet.graph === "pie"
+                    ? {
+                        type: selectedSheet?.graph,
+                        values: selectedSheet?.row?.values,
+                        labels: selectedSheet?.col?.values,
+                      }
+                    : selectedSheet.graph === "donut"
+                    ? {
+                        type: "pie",
+                        values: selectedSheet?.row?.values,
+                        labels: selectedSheet?.col?.values,
+                        hole: 0.4,
+                      }
+                    : selectedSheet.graph === "box"
+                    ? {
+                        type: selectedSheet?.graph,
+                        x: selectedSheet?.col?.values,
+                        y: selectedSheet?.row?.values,
+                        transforms: [
+                          {
+                            type: "groupby",
+                            groups: selectedSheet?.groupby?.values,
+                          },
+                          {
+                            type: filterType,
+                            target: "y",
+                            operation: filterOperator,
+                            value: filterValue,
+                          },
+                        ],
+                      }
+                    : selectedSheet.graph === "funnel"
+                    ? {
+                        type: selectedSheet?.graph,
+                        y: selectedSheet?.col?.values,
+                        x: selectedSheet?.row?.values,
+                        hoverinfo: "x+percent previous+percent initial",
+                        transforms: [
+                          {
+                            type: "aggregate",
+                            aggregations: [
+                              {
+                                target: "x",
+                                func: "sum",
+                              },
                             ],
-                            align: "center",
-                            font: {
-                              family: "Roboto",
-                              size: 15,
-                              color: "Black",
-                            },
                           },
-                          cells: {
-                            values: [
-                              selectedSheet?.col?.values,
-                              selectedSheet?.row?.values,
+                          {
+                            type: "groupby",
+                            groups: selectedSheet?.groupby?.values,
+                          },
+                          {
+                            type: "sort",
+                            target: selectedSheet?.row?.values,
+                            order: "descending",
+                          },
+                        ],
+                      }
+                    : selectedSheet.graph === "scatter"
+                    ? {
+                        type: selectedSheet?.graph,
+                        x: selectedSheet?.col?.values,
+                        y: selectedSheet?.row?.values,
+                        mode: "markers", //only for the mode scatter has to be written in a diffrent object.
+                        transforms: [
+                          {
+                            type: "aggregate",
+                            aggregations: [
+                              {
+                                target: "y",
+                                func: "sum",
+                              },
                             ],
-                            height: 20,
-                            font: {
-                              family: "Roboto",
-                              size: 13,
-                              color: "Black",
-                            },
                           },
-                        }
-                      : selectedSheet.graph === "scattermapbox"
-                      ? {
-                          type: selectedSheet?.graph,
-                          // lon: [78.3728344],
-                          // lat: [17.4563197],
-                          lon: selectedSheet?.col?.values,
-                          lat: selectedSheet?.row?.values,
-                          mode: "markers",
-                          marker: {
-                            size: 12,
+                          {
+                            type: filterType,
+                            target: "y",
+                            operation: filterOperator,
+                            value: filterValue,
                           },
-                          text: selectedSheet?.text?.values,
-                          transforms: [
-                            {
-                              type: "groupby",
-                              groups: selectedSheet?.groupby?.values,
-                            },
-                          ],
-                        }
-                      : selectedSheet.graph === "scattergeo"
-                      ? {
-                          type: selectedSheet?.graph,
-                          lon: selectedSheet?.col?.values,
-                          lat: selectedSheet?.row?.values,
-                          locationmode: {
-                            enumerated:
-                              "ISO-3" |
-                              "Saudi Arabia" |
-                              "USA-states" |
-                              "country names",
-                          },
-                          default: "ISO-3",
-                          mode: "markers",
-                          marker: {
-                            size: 12,
-                          },
-                          text: selectedSheet?.text?.values,
-                          transforms: [
-                            {
-                              type: "groupby",
-                              groups: selectedSheet?.groupby?.values,
-                            },
-                          ],
-                        }
-                      : selectedSheet.graph === "treemap"
-                      ? {
-                          type: "treemap",
-                          labels: selectedSheet?.row?.values,
-                          parents: selectedSheet?.col?.values,
-                        }
-                      : selectedSheet.graph === "bar"
-                      ? {
-                          type: selectedSheet?.graph,
-                          x:
-                            sortedData.x.length > 0
-                              ? sortedData.x
-                              : selectedSheet?.col?.values,
-                          y:
-                            sortedData.y.length > 0
-                              ? sortedData.y
-                              : selectedSheet?.row?.values,
-                          barmode: "stack",
-                          name: selectedSheet?.col?.key,
-                          // text: selectedSheet?.col?.values,
-                          transforms: [
-                            {
-                              type: "aggregate",
-                              aggregations: [
-                                {
-                                  target: "y",
-                                  func: "sum",
-                                  enabled: true,
-                                },
-                              ],
-                            },
 
-                            {
-                              type: filterType,
-                              target: "y",
-                              operation: filterOperator,
-                              value: filterValue,
-                            },
-                            {},
-                            {
-                              type: "groupby",
-                              groups: selectedSheet?.groupby?.values,
-                            },
+                          {
+                            type: "groupby",
+                            groups: selectedSheet?.groupby?.values,
+                          },
+                        ],
+                      }
+                    : selectedSheet.graph === "table"
+                    ? {
+                        type: selectedSheet?.graph,
+                        columnorder: [1, 9],
+                        columnwidth: [40, 40],
+                        header: {
+                          values: [
+                            selectedSheet?.col?.key,
+                            selectedSheet?.row?.key,
                           ],
-                        }
-                      : {
-                          type: selectedSheet?.graph,
-                          x: selectedSheet?.col?.values,
-                          y: selectedSheet?.row?.values,
-                          barmode: "stack",
-                          name: selectedSheet?.col?.key,
-                          orientation: "v",
-                          // text: selectedSheet?.col?.values,
-                          transforms: [
-                            {
-                              type: "aggregate",
-                              aggregations: [
-                                {
-                                  target: "y",
-                                  func: "sum",
-                                  enabled: true,
-                                },
-                              ],
-                            },
-
-                            {
-                              type: filterType,
-                              target: "y",
-                              operation: filterOperator,
-                              value: filterValue,
-                            },
-                            {
-                              type: sort,
-                              target: selectedSheet?.row?.values,
-                              order: sortType,
-                            },
-                            {
-                              type: "groupby",
-                              groups: selectedSheet?.groupby?.values,
-                            },
-                          ],
+                          align: "center",
+                          font: {
+                            family: "Roboto",
+                            size: 15,
+                            color: "Black",
+                          },
                         },
-                  ]}
-                  layout={{
-                    autosize: true,
-                    xaxis: { title: { text: selectedSheet?.col?.key } },
-                    yaxis: {
-                      title: { text: selectedSheet?.row?.key },
-                      automargin: "true",
-                    },
-                    // width: 2040,
-                    width: 840,
-                    height: 420,
-                    fontSize: 2,
-                    mapbox: { style: "open-street-map" },
-                    barmode: "relative",
-                    hovermode: "closest",
-                    geo: {
-                      scope: scopemap,
-                      showlakes: true,
-                      lakecolor: "rgb(255,255,255)",
-                    },
+                        cells: {
+                          values: [
+                            selectedSheet?.col?.values,
+                            selectedSheet?.row?.values,
+                          ],
+                          height: 20,
+                          font: {
+                            family: "Roboto",
+                            size: 13,
+                            color: "Black",
+                          },
+                        },
+                      }
+                    : selectedSheet.graph === "scattermapbox"
+                    ? {
+                        type: selectedSheet?.graph,
+                        // lon: [78.3728344],
+                        // lat: [17.4563197],
+                        lon: selectedSheet?.col?.values,
+                        lat: selectedSheet?.row?.values,
+                        mode: "markers",
+                        marker: {
+                          size: 12,
+                        },
+                        text: selectedSheet?.text?.values,
+                        transforms: [
+                          {
+                            type: "groupby",
+                            groups: selectedSheet?.groupby?.values,
+                          },
+                        ],
+                      }
+                    : selectedSheet.graph === "scattergeo"
+                    ? {
+                        type: selectedSheet?.graph,
+                        lon: selectedSheet?.col?.values,
+                        lat: selectedSheet?.row?.values,
+                        locationmode: {
+                          enumerated:
+                            "ISO-3" |
+                            "Saudi Arabia" |
+                            "USA-states" |
+                            "country names",
+                        },
+                        default: "ISO-3",
+                        mode: "markers",
+                        marker: {
+                          size: 12,
+                        },
+                        text: selectedSheet?.text?.values,
+                        transforms: [
+                          {
+                            type: "groupby",
+                            groups: selectedSheet?.groupby?.values,
+                          },
+                        ],
+                      }
+                    : selectedSheet.graph === "treemap"
+                    ? {
+                        type: "treemap",
+                        labels: selectedSheet?.row?.values,
+                        parents: selectedSheet?.col?.values,
+                      }
+                    : selectedSheet.graph === "bar"
+                    ? {
+                        type: selectedSheet?.graph,
+                        x:
+                          sortedData.x.length > 0
+                            ? sortedData.x
+                            : selectedSheet?.col?.values,
+                        y:
+                          sortedData.y.length > 0
+                            ? sortedData.y
+                            : selectedSheet?.row?.values,
+                        barmode: "stack",
+                        name: selectedSheet?.col?.key,
+                        // text: selectedSheet?.col?.values,
+                        transforms: [
+                          {
+                            type: "aggregate",
+                            aggregations: [
+                              {
+                                target: "y",
+                                func: "sum",
+                                enabled: true,
+                              },
+                            ],
+                          },
 
-                    updatemenus: [
-                      {
-                        x: 0.85,
-                        y: 1.05,
-                        showactive: true,
-                        buttons: [
                           {
-                            method: "restyle",
-                            args: ["transforms[0].aggregations[0].func", "sum"],
-                            label: "Sum",
+                            type: filterType,
+                            target: "y",
+                            operation: filterOperator,
+                            value: filterValue,
                           },
+                          {},
                           {
-                            method: "restyle",
-                            args: ["transforms[0].aggregations[0].func", "avg"],
-                            label: "Avg",
+                            type: "groupby",
+                            groups: selectedSheet?.groupby?.values,
                           },
+                        ],
+                      }
+                    : {
+                        type: selectedSheet?.graph,
+                        x: selectedSheet?.col?.values,
+                        y: selectedSheet?.row?.values,
+                        barmode: "stack",
+                        name: selectedSheet?.col?.key,
+                        orientation: "v",
+                        // text: selectedSheet?.col?.values,
+                        transforms: [
                           {
-                            method: "restyle",
-                            args: ["transforms[0].aggregations[0].func", "min"],
-                            label: "Min",
-                          },
-                          {
-                            method: "restyle",
-                            args: ["transforms[0].aggregations[0].func", "max"],
-                            label: "Max",
-                          },
-                          {
-                            method: "restyle",
-                            args: [
-                              "transforms[0].aggregations[0].func",
-                              "mode",
+                            type: "aggregate",
+                            aggregations: [
+                              {
+                                target: "y",
+                                func: "sum",
+                                enabled: true,
+                              },
                             ],
-                            label: "Mode",
+                          },
+
+                          {
+                            type: filterType,
+                            target: "y",
+                            operation: filterOperator,
+                            value: filterValue,
                           },
                           {
-                            method: "restyle",
-                            args: [
-                              "transforms[0].aggregations[0].func",
-                              "median",
-                            ],
-                            label: "Median",
+                            type: sort,
+                            target: selectedSheet?.row?.values,
+                            order: sortType,
                           },
                           {
-                            method: "restyle",
-                            args: [
-                              "transforms[0].aggregations[0].func",
-                              "count",
-                            ],
-                            label: "Count",
-                          },
-                          {
-                            method: "restyle",
-                            args: [
-                              "transforms[0].aggregations[0].func",
-                              "stddev",
-                            ],
-                            label: "Std.Dev",
-                          },
-                          {
-                            method: "restyle",
-                            args: [
-                              "transforms[0].aggregations[0].func",
-                              "first",
-                            ],
-                            label: "First",
-                          },
-                          {
-                            method: "restyle",
-                            args: [
-                              "transforms[0].aggregations[0].func",
-                              "last",
-                            ],
-                            label: "Last",
+                            type: "groupby",
+                            groups: selectedSheet?.groupby?.values,
                           },
                         ],
                       },
-                    ],
-                  }}
-                />
-              )}
-            </div>
-          </Scrollbars>
+                ]}
+                layout={{
+                  autosize: true,
+                  xaxis: { title: { text: selectedSheet?.col?.key } },
+                  yaxis: {
+                    title: { text: selectedSheet?.row?.key },
+                    automargin: "true",
+                  },
+                  // width: 2040,
+                  width: 840,
+                  height: 420,
+                  fontSize: 2,
+                  mapbox: { style: "open-street-map" },
+                  barmode: "relative",
+                  hovermode: "closest",
+                  geo: {
+                    scope: scopemap,
+                    showlakes: true,
+                    lakecolor: "rgb(255,255,255)",
+                  },
+
+                  updatemenus: [
+                    {
+                      x: 0.85,
+                      y: 1.05,
+                      showactive: true,
+                      buttons: [
+                        {
+                          method: "restyle",
+                          args: ["transforms[0].aggregations[0].func", "sum"],
+                          label: "Sum",
+                        },
+                        {
+                          method: "restyle",
+                          args: ["transforms[0].aggregations[0].func", "avg"],
+                          label: "Avg",
+                        },
+                        {
+                          method: "restyle",
+                          args: ["transforms[0].aggregations[0].func", "min"],
+                          label: "Min",
+                        },
+                        {
+                          method: "restyle",
+                          args: ["transforms[0].aggregations[0].func", "max"],
+                          label: "Max",
+                        },
+                        {
+                          method: "restyle",
+                          args: ["transforms[0].aggregations[0].func", "mode"],
+                          label: "Mode",
+                        },
+                        {
+                          method: "restyle",
+                          args: [
+                            "transforms[0].aggregations[0].func",
+                            "median",
+                          ],
+                          label: "Median",
+                        },
+                        {
+                          method: "restyle",
+                          args: ["transforms[0].aggregations[0].func", "count"],
+                          label: "Count",
+                        },
+                        {
+                          method: "restyle",
+                          args: [
+                            "transforms[0].aggregations[0].func",
+                            "stddev",
+                          ],
+                          label: "Std.Dev",
+                        },
+                        {
+                          method: "restyle",
+                          args: ["transforms[0].aggregations[0].func", "first"],
+                          label: "First",
+                        },
+                        {
+                          method: "restyle",
+                          args: ["transforms[0].aggregations[0].func", "last"],
+                          label: "Last",
+                        },
+                      ],
+                    },
+                  ],
+                }}
+              />
+            )}
+          </div>
         </div>
       </div>
 

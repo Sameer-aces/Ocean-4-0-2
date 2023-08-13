@@ -52,7 +52,6 @@ const Login = (props) => {
         // .post("http://18.117.87.102:5001/api/users/login", userData)
 
         .then((res) => {
-          console.log("working");
           const { token } = res.data;
           localStorage.setItem("jwtToken", token);
           navigate("/sheet/sheet");

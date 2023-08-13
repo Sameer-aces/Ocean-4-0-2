@@ -17,28 +17,6 @@ export const registerUser = (userData, history) => {
     .then((res) => alert("Registered Successfull pls Login"))
     .catch((err) => console.log(err));
 };
-//to get user token
-// export const loginUser = (userData, props) => {
-//   axios
-//     // .post("https://ocean-4-1-userserver.onrender.com/api/users/login", userData)
-//     .post(
-//       "https://ocean-user-serverbackend.onrender.com/api/users/login",
-//       userData
-//     )
-//     .then((res) => {
-//       const { token } = res.data;
-//       const { navigate } = useNavigate();
-//       localStorage.setItem("jwtToken", token);
-//       setAuthToken(token);
-//       const decoded = jwt_decode(token);
-//       setCurrentUser(decoded);
-//       console.log("sasa");
-//       navigate("/sheet/sheet");
-//     })
-//     .catch((err) => {
-//       alert("Email or password invalid");
-//     });
-// };
 
 export const setCurrentUser = (decoded) => {
   return {

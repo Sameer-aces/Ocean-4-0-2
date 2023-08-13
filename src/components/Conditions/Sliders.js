@@ -60,10 +60,7 @@ const Sliders = (props) => {
         newFieldArray.push("q1");
       }
     }
-    console.log(q4);
-    console.log(q3);
-    console.log(q2);
-    console.log(q1);
+ 
     const fileData = selectedWB[selectedWBSheet].slice(1);
     for (var i = 0; i < fileData.length; i++) {
       fileData[i].push(newFieldArray[i]);

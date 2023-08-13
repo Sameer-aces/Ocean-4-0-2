@@ -62,9 +62,34 @@ export const GlobalProvider = ({ children }) => {
   const [modalIsOpenFilter, setIsOpenFilter] = useState(false);
   const [selectValue, setSelectValue] = useState();
   const [selected, setSelected] = useState();
+  const [dbname, setdbNames] = useState();
+  const [modalIsOpens, setIsOpensql] = useState(false);
+  const [serverDetails, setServerDetails] = useState({
+    name: "",
+    portNumber: "",
+    user: "",
+    password: "",
+    database: "",
+  });
+  const [dbTableNames, setdbTableNames] = useState();
+  const [databaseNames, setdatabaseName] = useState({
+    databaseName: "",
+    databaseTableName: "",
+  });
+
   return (
     <GlobalContext.Provider
       value={{
+        serverDetails,
+        setServerDetails,
+        databaseNames,
+        setdatabaseName,
+        dbTableNames,
+        setdbTableNames,
+        modalIsOpens,
+        setIsOpensql,
+        dbname,
+        setdbNames,
         selected,
         setSelected,
         selectValue,
